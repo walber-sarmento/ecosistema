@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--port", "6379"
+    ]
+    volumes:
+      - redis_data:/data
+    networks:
+      - web
+    # Descomente se precisar acesso direto ao Redis de fora do container:
+    # ports:
+    #   - 6379:6379
+
+volumes:
+  redis_data:
+    external: true
+    name: redis_data
+
+networks:
+  web:
+    external: true

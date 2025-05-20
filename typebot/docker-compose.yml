@@ -1,0 +1,70 @@
+services:
+  typebot_builder:
+    image: baptistearno/typebot-builder:latest
+    container_name: typebot_builder
+    restart: always
+    networks:
+      - web
+    environment:
+      - DATABASE_URL=postgresql://postgres:senhad0db@postgres:5432/typebot
+      - ENCRYPTION_SECRET=7Rl2NKGhkMUHRV0dtRg8hD2YNopCrAeH
+      - DEFAULT_WORKSPACE_PLAN=UNLIMITED
+      - NEXTAUTH_URL=https://typebotviewer.wssolucoesti.com
+      - NEXT_PUBLIC_VIEWER_URL=https://typebotbuilder.wssolucoesti.com
+      - NEXTAUTH_URL_INTERNAL=http://localhost:3000
+      - DISABLE_SIGNUP=false
+      - ADMIN_EMAIL=walber.fernado@gmail.com
+      - NEXT_PUBLIC_SMTP_FROM=walber.fernado@gmail.com
+      - SMTP_AUTH_DISABLED=false
+      - SMTP_USERNAME=walber.fernado@gmail.com
+      - SMTP_PASSWORD=wzvwedemhatcbano
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_SECURE=true
+      - S3_ACCESS_KEY=GBQlhhnM3dEoqM7AxG0G
+      - S3_SECRET_KEY=PggPiZRI5xzLf7wb7tK9IgJ0y8S6EC5JgqxvYF00
+      - S3_BUCKET=typebot
+      - S3_ENDPOINT=s3api.wssolucoesti.com
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.typebot_builder.rule=Host(`typebotviewer.wssolucoesti.com`)
+      - traefik.http.routers.typebot_builder.tls.certresolver=lets-encrypt
+      - traefik.http.services.typebot_builder.loadbalancer.server.port=3000
+      - traefik.docker.network=web
+
+  typebot_viewer:
+    image: baptistearno/typebot-viewer:latest
+    container_name: typebot_viewer
+    restart: always
+    networks:
+      - web
+    environment:
+      - DATABASE_URL=postgresql://postgres:senhad0db@postgres:5432/typebot
+      - ENCRYPTION_SECRET=7Rl2NKGhkMUHRV0dtRg8hD2YNopCrAeH
+      - DEFAULT_WORKSPACE_PLAN=UNLIMITED
+      - NEXTAUTH_URL=https://typebotviewer.wssolucoesti.com
+      - NEXT_PUBLIC_VIEWER_URL=https://typebotbuilder.wssolucoesti.com
+      - NEXTAUTH_URL_INTERNAL=http://localhost:3000
+      - DISABLE_SIGNUP=false
+      - ADMIN_EMAIL=walber.fernado@gmail.com
+      - NEXT_PUBLIC_SMTP_FROM=walber.fernado@gmail.com
+      - SMTP_AUTH_DISABLED=false
+      - SMTP_USERNAME=walber.fernado@gmail.com
+      - SMTP_PASSWORD=wzvwedemhatcbano
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=465
+      - SMTP_SECURE=true
+      - S3_ACCESS_KEY=GBQlhhnM3dEoqM7AxG0G
+      - S3_SECRET_KEY=PggPiZRI5xzLf7wb7tK9IgJ0y8S6EC5JgqxvYF00
+      - S3_BUCKET=typebot
+      - S3_ENDPOINT=s3api.wssolucoesti.com
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.typebot_viewer.rule=Host(`typebotbuilder.wssolucoesti.com`)
+      - traefik.http.routers.typebot_viewer.tls.certresolver=lets-encrypt
+      - traefik.http.services.typebot_viewer.loadbalancer.server.port=3000
+      - traefik.docker.network=web
+
+networks:
+  web:
+    external: true

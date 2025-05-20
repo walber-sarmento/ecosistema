@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=senhad0db
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=teste
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - web
+    # Descomente se quiser acessar diretamente (ex: pgAdmin externo)
+    # ports:
+    #   - 5432:5432
+
+volumes:
+  postgres_data:
+    external: true
+    name: postgres_data
+
+networks:
+  web:
+    external: true

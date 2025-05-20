@@ -1,0 +1,35 @@
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    restart: always
+    command: server /data --console-address ":9001"
+    volumes:
+      - /home/docker/minio/data:/data
+    environment:
+      - MINIO_ROOT_USER=GBQlhhnM3dEoqM7AxG0G
+      - MINIO_ROOT_PASSWORD=PggPiZRI5xzLf7wb7tK9IgJ0y8S6EC5JgqxvYF00
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+
+      # Rota para a API S3 (porta 9000)
+      - "traefik.http.routers.minio.rule=Host(`s3api.wssolucoesti.com`)"
+      - "traefik.http.routers.minio.service=minio-api"
+      - "traefik.http.routers.minio.tls=true"
+      - "traefik.http.routers.minio.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+
+      # Rota para o console (porta 9001)
+      - "traefik.http.routers.minio-console.rule=Host(`s3.wssolucoesti.com`)"
+      - "traefik.http.routers.minio-console.service=minio-console-api"
+      - "traefik.http.routers.minio-console.tls=true"
+      - "traefik.http.routers.minio-console.tls.certresolver=lets-encrypt"
+      - "traefik.http.services.minio-console-api.loadbalancer.server.port=9001"
+
+      - "traefik.docker.network=web"
+
+networks:
+  web:
+    external: true

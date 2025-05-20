@@ -1,0 +1,107 @@
+services:
+  n8n_editor:
+    image: n8nio/n8n:latest
+    container_name: n8n_editor
+    restart: always
+    command: start
+    networks:
+      - web
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n_queue
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=senhad0db
+      - N8N_ENCRYPTION_KEY=r3djGX2vPoeL9zKL
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_HOST=n8neditor.wssolucoesti.com
+      - N8N_EDITOR_BASE_URL=https://n8neditor.wssolucoesti.com/
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://n8nwebhook.wssolucoesti.com/
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_DB=2
+      - NODE_FUNCTION_ALLOW_EXTERNAL=moment,lodash,moment-with-locales
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=336
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n_editor.rule=Host(`n8neditor.wssolucoesti.com`)
+      - traefik.http.routers.n8n_editor.tls.certresolver=lets-encrypt
+      - traefik.http.services.n8n_editor.loadbalancer.server.port=5678
+      - traefik.docker.network=web
+
+  n8n_webhook:
+    image: n8nio/n8n:latest
+    container_name: n8n_webhook
+    restart: always
+    command: webhook
+    networks:
+      - web
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n_queue
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=senhad0db
+      - N8N_ENCRYPTION_KEY=r3djGX2vPoeL9zKL
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_HOST=n8neditor.wssolucoesti.com
+      - N8N_EDITOR_BASE_URL=https://n8neditor.wssolucoesti.com/
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://n8nwebhook.wssolucoesti.com/
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_DB=2
+      - NODE_FUNCTION_ALLOW_EXTERNAL=moment,lodash,moment-with-locales
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=336
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n_webhook.rule=Host(`n8nwebhook.wssolucoesti.com`)
+      - traefik.http.routers.n8n_webhook.tls.certresolver=lets-encrypt
+      - traefik.http.services.n8n_webhook.loadbalancer.server.port=5678
+      - traefik.docker.network=web
+
+  n8n_worker:
+    image: n8nio/n8n:latest
+    command: worker --concurrency=10
+    networks:
+      - web
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_DATABASE=n8n_queue
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_USER=postgres
+      - DB_POSTGRESDB_PASSWORD=senhad0db
+      - N8N_ENCRYPTION_KEY=r3djGX2vPoeL9zKL
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_HOST=n8neditor.wssolucoesti.com
+      - N8N_EDITOR_BASE_URL=https://n8neditor.wssolucoesti.com/
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=n8nwebhook.wssolucoesti.com/
+      - EXECUTIONS_MODE=queue
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_DB=2
+      - NODE_FUNCTION_ALLOW_EXTERNAL=moment,lodash,moment-with-locales
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=336
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - TZ=America/Sao_Paulo
+
+networks:
+  web:
+    external: true
