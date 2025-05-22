@@ -111,7 +111,3 @@ docker compose version
 sudo systemctl enable docker
 sudo systemctl start docker
 ```
-
----
-
-Se quiser, posso te fornecer um script `.sh` para automatizar todo esse processo. Deseja isso?
